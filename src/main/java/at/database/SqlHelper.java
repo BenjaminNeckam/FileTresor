@@ -2,12 +2,13 @@ package at.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 //https://stackoverflow.com/questions/2839321/connect-java-to-a-mysql-database
 //For good example to connect properly?
-//TODO Singleton so there is just one connection?
+
 public class SqlHelper {
 	protected static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
 	protected static final String DB_URL = "jdbc:mysql://localhost/data";
@@ -15,6 +16,14 @@ public class SqlHelper {
 	protected static final String PASS = "mysqlFcstadlau1";
 	Connection conn = null;
 	Statement stmnt = null;
+	static SqlHelper instance = null;
+	
+	public static SqlHelper getInstance() {
+		if(instance == null) {
+			instance = new SqlHelper();
+		}
+		return instance;
+	}
 	
 	public void initDatabaseConnection(){
 		try {
@@ -42,5 +51,32 @@ public class SqlHelper {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public void insterInto(String table, String name, String passwd) {
+		String sql;
+		int id = 1;
+		sql = "INSERT INTO " + table + 
+				"VALUES (" + id + ", '" + name + "','" + passwd + "')";
+		try {
+			stmnt.executeUpdate(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Values inserted");
+	}
+	
+	public ResultSet selectFrom(String select, String from) {
+		String sql;		
+		sql = "SELECT " + select + " FROM " + from ;
+		ResultSet rs = null;
+		try {
+			rs = stmnt.executeQuery(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return rs;
 	}
 }

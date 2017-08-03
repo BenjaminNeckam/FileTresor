@@ -13,15 +13,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 
-public class UserData extends SqlHelper{
+public class UserData{
 	
 	public static void main(String[] args){
 		Connection conn = null;
 		Statement stmnt = null;
+		SqlHelper sqlHelper = SqlHelper.getInstance();
 		try {
-			Class.forName(JDBC_DRIVER);
-			System.out.println("Connecting to database...");
-			conn = DriverManager.getConnection(DB_URL,USER,PASS);
+//			Class.forName(sqlHelper.JDBC_DRIVER);
+//			System.out.println("Connecting to database...");
+//			conn = DriverManager.getConnection(sqlHelper.DB_URL,sqlHelper.USER,sqlHelper.PASS);
 			
 			//INSERT Statement
 			
@@ -31,7 +32,7 @@ public class UserData extends SqlHelper{
 //					"VALUES (1,'Test','Test')";
 //			stmnt.executeUpdate(sql);
 //			System.out.println("Values inserted");
-//			
+////			
 //			sql = "SELECT * FROM user";
 //			ResultSet rs = stmnt.executeQuery(sql);
 //			while(rs.next()){
@@ -68,9 +69,6 @@ public class UserData extends SqlHelper{
 			ps.close();
 			conn.close();
 			
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
