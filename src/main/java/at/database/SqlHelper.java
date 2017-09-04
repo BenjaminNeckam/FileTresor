@@ -9,6 +9,7 @@ import java.sql.Statement;
 //https://stackoverflow.com/questions/2839321/connect-java-to-a-mysql-database
 //For good example to connect properly?
 
+//TODO Always init a new connection and statement or one for all queries?
 public class SqlHelper {
 	protected static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
 	protected static final String DB_URL = "jdbc:mysql://localhost/data";
@@ -17,6 +18,7 @@ public class SqlHelper {
 	Connection conn = null;
 	Statement stmnt = null;
 	static SqlHelper instance = null;
+	
 	
 	public static SqlHelper getInstance() {
 		if(instance == null) {
@@ -44,7 +46,7 @@ public class SqlHelper {
 		try {
 			//TODO change to log4j
 			conn.close();
-			//stmnt.close();
+			stmnt.close();
 			System.out.println("Connction closed...");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -55,7 +57,11 @@ public class SqlHelper {
 	
 	public void insterInto(String table, String name, String passwd) {
 		String sql;
-		int id = 1;
+		int hash = 7;
+		for(int i = 0; i < (name.length() + passwd.length()); i++) {
+			hash = hash * 31 + name.charAt(i);
+		}
+		int id = hash;
 		sql = "INSERT INTO " + table + 
 				"VALUES (" + id + ", '" + name + "','" + passwd + "')";
 		try {
@@ -67,16 +73,17 @@ public class SqlHelper {
 		System.out.println("Values inserted");
 	}
 	
-	public ResultSet selectFrom(String select, String from) {
-		String sql;		
-		sql = "SELECT " + select + " FROM " + from ;
-		ResultSet rs = null;
-		try {
-			rs = stmnt.executeQuery(sql);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public ResultSet selectFrom(String select, String from) throws SQLException {
+		String sql;
+		stmnt = conn.createStatement();
+		sql = "SELECT " + select + " FROM " + from;
+		ResultSet rs = stmnt.executeQuery(sql);
+//		try {
+//			rs = stmnt.executeQuery(sql);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		return rs;
 	}
 }
