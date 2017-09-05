@@ -1,7 +1,5 @@
 package at.usermanagement;
 
-import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -9,13 +7,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 // http://www.bhaveshthaker.com/24/calling-invoking-secure-restful-web-service-over-https-with-jax-rs-in-java-without-keystore-truststore-information/
 
 @XmlRootElement(name = "user")
-public class User implements Serializable {
+public class User {
 	private int id;
 	private String name;
 	private String passwd;
-	
-	public User(){};
-	
+
+	public User() {
+	};
+
 	public User(int id, String name, String passwd) {
 		super();
 		this.id = id;
@@ -49,7 +48,16 @@ public class User implements Serializable {
 	public void setPasswd(String passwd) {
 		this.passwd = passwd;
 	}
-	
-	
-	
+
+	public boolean equals(User user) {
+		if (user == null) {
+			return false;
+		} else {
+			if (id == user.getId() && name.equals(user.getName())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

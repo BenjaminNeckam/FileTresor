@@ -11,28 +11,27 @@ import java.sql.Statement;
 
 //TODO Always init a new connection and statement or one for all queries?
 public class SqlHelper {
-	protected static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
+	protected static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 	protected static final String DB_URL = "jdbc:mysql://localhost/data";
 	protected static final String USER = "root";
 	protected static final String PASS = "mysqlFcstadlau1";
 	Connection conn = null;
 	Statement stmnt = null;
 	static SqlHelper instance = null;
-	
-	
+
 	public static SqlHelper getInstance() {
-		if(instance == null) {
+		if (instance == null) {
 			instance = new SqlHelper();
 		}
 		return instance;
 	}
-	
-	public void initDatabaseConnection(){
+
+	public void initDatabaseConnection() {
 		try {
 			Class.forName(JDBC_DRIVER);
-			//TODO change to log4j
+			// TODO change to log4j
 			System.out.println("Connecting to database...");
-			conn = DriverManager.getConnection(DB_URL,USER,PASS);
+			conn = DriverManager.getConnection(DB_URL, USER, PASS);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -41,10 +40,10 @@ public class SqlHelper {
 			e.printStackTrace();
 		}
 	}
-	
-	public void shutDownConnection(){
+
+	public void shutDownConnection() {
 		try {
-			//TODO change to log4j
+			// TODO change to log4j
 			conn.close();
 			stmnt.close();
 			System.out.println("Connction closed...");
@@ -52,19 +51,14 @@ public class SqlHelper {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	public void insterInto(String table, String name, String passwd) {
+
+	public void insterInto(String table, int id, String name, String passwd) {
 		String sql;
-		int hash = 7;
-		for(int i = 0; i < (name.length() + passwd.length()); i++) {
-			hash = hash * 31 + name.charAt(i);
-		}
-		int id = hash;
-		sql = "INSERT INTO " + table + 
-				"VALUES (" + id + ", '" + name + "','" + passwd + "')";
+		sql = "INSERT INTO " + table + "VALUES (" + id + ", '" + name + "','" + passwd + "')";
 		try {
+			stmnt = conn.createStatement();
 			stmnt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -72,18 +66,44 @@ public class SqlHelper {
 		}
 		System.out.println("Values inserted");
 	}
-	
-	public ResultSet selectFrom(String select, String from) throws SQLException {
+
+	public ResultSet selectFrom(String select, String from) {
 		String sql;
-		stmnt = conn.createStatement();
 		sql = "SELECT " + select + " FROM " + from;
-		ResultSet rs = stmnt.executeQuery(sql);
-//		try {
-//			rs = stmnt.executeQuery(sql);
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		ResultSet rs = null;
+		try {
+			stmnt = conn.createStatement();
+			rs = stmnt.executeQuery(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return rs;
+	}
+
+	public void updateUser(int id, String name, String passwd) {
+		String sql;
+		sql = "UPDATE users" + "SET username = '" + name + "', passwd = '" + passwd + "'" + "WHERE userId = " + id;
+
+		try {
+			stmnt = conn.createStatement();
+			stmnt.executeUpdate(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void deleteUser(int id) {
+		String sql;
+		sql = "DELETE FROM users WHERE userId = " + id;
+
+		try {
+			stmnt = conn.createStatement();
+			stmnt.executeUpdate(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

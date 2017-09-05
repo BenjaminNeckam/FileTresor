@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import at.database.SqlHelper;
 
@@ -27,43 +28,71 @@ public class UserDao {
 				user.setName(rs.getString(2));
 				user.setPasswd(rs.getString(3));
 				userList.add(user);
-				System.out.println("Id: " + user.getId());
-				System.out.println("Name: " + user.getName());
-				System.out.println("Passwd: " + user.getPasswd());
 			}
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		return userList;
 	}
 
-	public void insertUser(String table, String name, String passwd) {
-		sqlHelper.insterInto(table, name, passwd);
-		sqlHelper.shutDownConnection();
+	public User getUser(int id) {
+		List<User> users = getAllUsers();
+
+		for (User user : users) {
+			if (user.getId() == id) {
+				return user;
+			}
+		}
+		return null;
 	}
 
-//	public static void main(String[] args) {
-//		UserDao ud = new UserDao();
-//		ud.sqlHelper.initDatabaseConnection();
-//		ud.sqlHelper.insterInto("users", "Test", "Test");
-//		ResultSet rs = ud.sqlHelper.selectFrom("*", "users");
-//
-//		try {
-//			while (rs.next()) {
-//				int id = rs.getInt(1);
-//				String username = rs.getString(2);
-//				String passwd = rs.getString(3);
-//
-//				System.out.println("ID: " + id);
-//				System.out.println("Username: " + username);
-//				System.out.println("Password: " + passwd);
-//			}
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
+	public int addUser(User newUser) {
+		List<User> users = getAllUsers();
+		boolean userExists = false;
+		int hash = 7;
+		for (int i = 0; i < (newUser.getName().length()); i++) {
+			hash = hash * 31 + newUser.getName().charAt(i);
+		}
+		newUser.setId(hash);
+		
+		for (User user : users) {
+			if (user.getId() == newUser.getId()) {
+				userExists = true;
+				break;
+			}
+		}
 
+		if (!userExists) {
+			sqlHelper.insterInto("users", newUser.getId(), newUser.getName(), newUser.getPasswd());
+			return 1;
+		}
+		return 0;
+	}
+
+	//TODO check if name is not multiple used
+	public int updateUser(User updateUser) {
+		List<User> users = getAllUsers();
+
+		for (User user : users) {
+			if (user.getId() == updateUser.getId()) {
+				sqlHelper.updateUser(updateUser.getId(), updateUser.getName(), updateUser.getPasswd());
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	public int deleteUser(int id) {
+		List<User> users = getAllUsers();
+
+		for (User user : users) {
+			if (user.getId() == id) {
+				sqlHelper.deleteUser(id);
+				return 1;
+			}
+		}
+		return 0;
+	}
 }
