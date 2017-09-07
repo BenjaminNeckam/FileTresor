@@ -14,7 +14,7 @@ public class SqlHelper {
 	protected static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 	protected static final String DB_URL = "jdbc:mysql://localhost/data";
 	protected static final String USER = "root";
-	protected static final String PASS = "mysqlFcstadlau1";
+	protected static final String PASS = "";
 	Connection conn = null;
 	Statement stmnt = null;
 	static SqlHelper instance = null;
