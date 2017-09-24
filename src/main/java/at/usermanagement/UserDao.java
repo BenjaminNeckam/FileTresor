@@ -65,7 +65,7 @@ public class UserDao {
 		}
 
 		if (!userExists) {
-			sqlHelper.insterInto("users", newUser.getId(), newUser.getName(), newUser.getPasswd());
+			sqlHelper.insterIntoUser(newUser.getId(), newUser.getName(), newUser.getPasswd());
 			return 1;
 		}
 		return 0;

@@ -14,7 +14,7 @@ public class SqlHelper {
 	protected static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 	protected static final String DB_URL = "jdbc:mysql://localhost/data";
 	protected static final String USER = "root";
-	protected static final String PASS = "";
+	protected static final String PASS = "mysqlFcstadlau1"; //Password here
 	Connection conn = null;
 	Statement stmnt = null;
 	static SqlHelper instance = null;
@@ -54,9 +54,9 @@ public class SqlHelper {
 
 	}
 
-	public void insterInto(String table, int id, String name, String passwd) {
+	public void insterIntoUser(int id, String name, String passwd) {
 		String sql;
-		sql = "INSERT INTO " + table + "VALUES (" + id + ", '" + name + "','" + passwd + "')";
+		sql = "INSERT INTO users(id, username, password) VALUES (" + id + ", '" + name + "','" + passwd + "')";
 		try {
 			stmnt = conn.createStatement();
 			stmnt.executeUpdate(sql);
@@ -83,7 +83,7 @@ public class SqlHelper {
 
 	public void updateUser(int id, String name, String passwd) {
 		String sql;
-		sql = "UPDATE users" + "SET username = '" + name + "', passwd = '" + passwd + "'" + "WHERE userId = " + id;
+		sql = "UPDATE users SET username = '" + name + "', password = '" + passwd + "'" + " WHERE id = " + id;
 
 		try {
 			stmnt = conn.createStatement();
@@ -96,7 +96,7 @@ public class SqlHelper {
 	
 	public void deleteUser(int id) {
 		String sql;
-		sql = "DELETE FROM users WHERE userId = " + id;
+		sql = "DELETE FROM users WHERE id = " + id;
 
 		try {
 			stmnt = conn.createStatement();
